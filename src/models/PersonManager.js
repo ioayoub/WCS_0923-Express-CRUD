@@ -1,3 +1,4 @@
+const { SQLGenericError } = require("../errors/SQLGenericError");
 const AbstractManager = require("./AbstractManager");
 
 class PersonManager extends AbstractManager {
@@ -6,13 +7,17 @@ class PersonManager extends AbstractManager {
   }
 
   // CREATE
-  async addOne(name, description) {
-    const [result] = await this.database.query(
-      `INSERT INTO ${this.table} (name, description) VALUES (?, ?)`,
-      [name, description]
-    );
+  async addOne(name, description, password) {
+    try {
+      const [result] = await this.database.query(
+        `INSERT INTO ${this.table} (name, description, password) VALUES (?, ?, ?)`,
+        [name, description, password]
+      );
 
-    return result;
+      return result;
+    } catch (e) {
+      throw new SQLGenericError();
+    }
   }
 
   // READ

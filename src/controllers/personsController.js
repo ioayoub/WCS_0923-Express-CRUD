@@ -1,5 +1,6 @@
 // B R E A D
 
+const { SQLGenericError } = require("../errors/SQLGenericError");
 const tables = require("../tables");
 
 // B - Browse (Read All)
@@ -50,23 +51,23 @@ const edit = async (req, res) => {
       message: "Votre utilisateur a été modifié",
     });
   } catch (e) {
-    console.error(e);
+    next(e);
   }
 };
 
 // A - Add
-const add = async (req, res) => {
-  const { name, description } = req.body;
+const add = async (req, res, next) => {
+  const { name, description, password } = req.body;
 
   try {
-    const result = await tables.person.addOne(name, description);
+    const result = await tables.person.addOne(name, description, password);
 
     res.status(201).json({
       id: result.insertId,
       message: "Votre utilisateur a été crée",
     });
   } catch (e) {
-    console.error(e);
+    next(e);
   }
 };
 
